@@ -33,6 +33,18 @@ jobs:
         run: |
           python -m pytest --html=reports/test-report.html --self-contained-html
 
+      - name: Create test summary
+        #github step summary is a special file that GitHub Actions uses to display information about the workflow run in the GitHub UI inside summary section.
+        #if: always() ensures that this step runs even if the previous steps fail, allowing you to capture test results and provide a summary regardless of the outcome of the tests.
+        #continue-on-error: is not used here because we want the workflow to fail if the tests fail, but we still want to generate a summary and upload artifacts.
+        if: always()
+        run: |
+          echo "##  Test summary:  ##" >> $GITHUB_STEP_SUMMARY
+          echo "  " >> $GITHUB_STEP_SUMMARY
+          echo "Test execution completed. Test report is available in the artifacts." >> $GITHUB_STEP_SUMMARY
+          echo "  " >> $GITHUB_STEP_SUMMARY
+          echo "Test report: \`test-report.html\`" >> $GITHUB_STEP_SUMMARY
+
       - name: Upload test results to artifacts
         if: always()
         uses: actions/upload-artifact@v7
