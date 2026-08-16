@@ -37,10 +37,19 @@ jobs:
           --junitxml=reports/test-results.xml
 
       - name: Parse test results
+        id: parse_results
         if: always()
         run: |
           python scripts/parse_results.py
           pwd
+
+      - name: Display test results
+        if: always()
+        run: |
+          echo "Total Tests: ${{ steps.parse_results.outputs.total }}"
+          echo "Passed Tests: ${{ steps.parse_results.outputs.passed }}"
+          echo "Failed Tests: ${{ steps.parse_results.outputs.failed }}"
+          echo "Skipped Tests: ${{ steps.parse_results.outputs.skipped }}"
 
       # - name: Create test summary
       #   #github step summary is a special file that GitHub Actions uses to display information about the workflow run in the GitHub UI inside summary section.

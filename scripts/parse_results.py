@@ -13,12 +13,26 @@ errors = int(root.find("testsuite").get("errors", 0))
 
 passed = total - failed - skipped - errors
 
-print(f"Total: {total}")
-print(f"Passed: {passed}")
-print(f"Failed: {failed}")
-print(f"Skipped: {skipped}")
-print(f"Errors: {errors}")
+# passing the output to the github actions output variables
+github_output = os.getenv("GITHUB_OUTPUT")
 
+if github_output:
+    with open(github_output, "a") as f:
+        f.write(f"total={total}\n")
+        f.write(f"passed={passed}\n")
+        f.write(f"failed={failed}\n")
+        f.write(f"skipped={skipped}\n")
+        f.write(f"errors={errors}\n")
+
+# prinitng the results to the console
+# print(f"Total: {total}")
+# print(f"Passed: {passed}")
+# print(f"Failed: {failed}")
+# print(f"Skipped: {skipped}")
+# print(f"Errors: {errors}")
+# will display the results in the GitHub Actions logs using next step using github actions output variables
+
+# create a summary for the GitHub Actions step summary
 summary_file = os.getenv("GITHUB_STEP_SUMMARY")
 
 if summary_file:
