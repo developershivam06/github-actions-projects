@@ -40,10 +40,10 @@ jobs:
         id: parse_results
         if: always()
         run: |
-          echo "$GITHUB_STEP_SUMMARY"
+          # echo "$GITHUB_STEP_SUMMARY"
           cat $GITHUB_STEP_SUMMARY
           python scripts/parse_results.py
-          cat $GITHUB_STEP_SUMMARY
+          # cat $GITHUB_STEP_SUMMARY
 
       - name: Display test results
         if: always()
@@ -54,11 +54,13 @@ jobs:
           echo "Skipped Tests: ${{ steps.parse_results.outputs.skipped }}"
 
       - name: Test passed
-        if: steps.parse_results.outputs.failed == '0'
+      # by default github actions consider the if condition with implicit success()
+      # that's why we are using always() to ensure that this step runs regardless of the previous steps' success or failure.
+        if: ${{ always() && steps.parse_results.outputs.failed == '0' }}
         run: echo "All test passed . Safe to continue with the workflow."
 
       - name : Test failed
-        if: steps.parse_results.outputs.failed != '0'
+        if: ${{ always() && steps.parse_results.outputs.failed != '0' }}
         run: echo "Some tests failed. Please check the test report for details."
 
       # - name: Create test summary
