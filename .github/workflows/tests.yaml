@@ -40,8 +40,10 @@ jobs:
         id: parse_results
         if: always()
         run: |
+          echo "$GITHUB_STEP_SUMMARY"
+          cat $GITHUB_STEP_SUMMARY
           python scripts/parse_results.py
-          pwd
+          cat $GITHUB_STEP_SUMMARY
 
       - name: Display test results
         if: always()
@@ -50,6 +52,14 @@ jobs:
           echo "Passed Tests: ${{ steps.parse_results.outputs.passed }}"
           echo "Failed Tests: ${{ steps.parse_results.outputs.failed }}"
           echo "Skipped Tests: ${{ steps.parse_results.outputs.skipped }}"
+
+      - name: Test passed
+        if: steps.parse_results.outputs.failed == '0'
+        run: echo "All test passed . Safe to continue with the workflow."
+
+      - name : Test failed
+        if: steps.parse_results.outputs.failed != '0'
+        run: echo "Some tests failed. Please check the test report for details."
 
       # - name: Create test summary
       #   #github step summary is a special file that GitHub Actions uses to display information about the workflow run in the GitHub UI inside summary section.
