@@ -39,11 +39,7 @@ jobs:
       - name: Parse test results
         id: parse_results
         if: always()
-        run: |
-          # echo "$GITHUB_STEP_SUMMARY"
-          cat $GITHUB_STEP_SUMMARY
-          python scripts/parse_results.py
-          # cat $GITHUB_STEP_SUMMARY
+        run: python scripts/parse_results.py
 
       - name: Display test results
         if: always()
@@ -52,6 +48,22 @@ jobs:
           echo "Passed Tests: ${{ steps.parse_results.outputs.passed }}"
           echo "Failed Tests: ${{ steps.parse_results.outputs.failed }}"
           echo "Skipped Tests: ${{ steps.parse_results.outputs.skipped }}"
+
+      - name: Set build information
+        if: always()
+        run: |
+          echo "BUILD_TOTAL=${{ steps.parse_results.outputs.total }}" >> $GITHUB_ENV
+          echo "BUILD_PASSED=${{ steps.parse_results.outputs.passed }}" >> $GITHUB_ENV
+          echo "BUILD_FAILED=${{ steps.parse_results.outputs.failed }}" >> $GITHUB_ENV
+          echo "BUILD_SKIPPED=${{ steps.parse_results.outputs.skipped }}" >> $GITHUB_ENV
+
+      - name: Display build information
+        if: always()
+        run: |
+          echo "BUILD_TOTAL= $BUILD_TOTAL"
+          echo "BUILD_PASSED=$BUILD_PASSED"
+          echo "BUILD_FAILED=$BUILD_FAILED"
+          echo "BUILD_SKIPPED=$BUILD_SKIPPED"
 
       - name: Test passed
       # by default github actions consider the if condition with implicit success()
