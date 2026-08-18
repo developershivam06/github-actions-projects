@@ -42,6 +42,14 @@ jobs:
           --self-contained-html \
           --junitxml=reports/test-results.xml
 
+      - name: Upload test results to artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-report
+          path: reports/
+          # archive: false
+
       - name: Parse test results
         id: parse_results
         if: always()
@@ -55,21 +63,21 @@ jobs:
           echo "Failed Tests: ${{ steps.parse_results.outputs.failed }}"
           echo "Skipped Tests: ${{ steps.parse_results.outputs.skipped }}"
 
-      - name: Set build information
-        if: always()
-        run: |
-          echo "BUILD_TOTAL=${{ steps.parse_results.outputs.total }}" >> $GITHUB_ENV
-          echo "BUILD_PASSED=${{ steps.parse_results.outputs.passed }}" >> $GITHUB_ENV
-          echo "BUILD_FAILED=${{ steps.parse_results.outputs.failed }}" >> $GITHUB_ENV
-          echo "BUILD_SKIPPED=${{ steps.parse_results.outputs.skipped }}" >> $GITHUB_ENV
+      # - name: Set build information
+      #   if: always()
+      #   run: |
+      #     echo "BUILD_TOTAL=${{ steps.parse_results.outputs.total }}" >> $GITHUB_ENV
+      #     echo "BUILD_PASSED=${{ steps.parse_results.outputs.passed }}" >> $GITHUB_ENV
+      #     echo "BUILD_FAILED=${{ steps.parse_results.outputs.failed }}" >> $GITHUB_ENV
+      #     echo "BUILD_SKIPPED=${{ steps.parse_results.outputs.skipped }}" >> $GITHUB_ENV
 
-      - name: Display build information
-        if: always()
-        run: |
-          echo "BUILD_TOTAL= $BUILD_TOTAL"
-          echo "BUILD_PASSED=$BUILD_PASSED"
-          echo "BUILD_FAILED=$BUILD_FAILED"
-          echo "BUILD_SKIPPED=$BUILD_SKIPPED"
+      # - name: Display build information
+      #   if: always()
+      #   run: |
+      #     echo "BUILD_TOTAL= $BUILD_TOTAL"
+      #     echo "BUILD_PASSED=$BUILD_PASSED"
+      #     echo "BUILD_FAILED=$BUILD_FAILED"
+      #     echo "BUILD_SKIPPED=$BUILD_SKIPPED"
 
       - name: Test passed
       # by default github actions consider the if condition with implicit success()
@@ -93,13 +101,6 @@ jobs:
       #     echo "  " >> $GITHUB_STEP_SUMMARY
       #     echo "Test report: \`test-report.html\`" >> $GITHUB_STEP_SUMMARY
 
-      - name: Upload test results to artifacts
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: test-report
-          path: reports/
-          # archive: false
 
   report:
     name: generate test report
@@ -111,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Report
+      - name: Final Report
         run: |
           echo "Total Tests: ${{ needs.test.outputs.total }}"
           echo "Passed Tests: ${{ needs.test.outputs.passed }}"
