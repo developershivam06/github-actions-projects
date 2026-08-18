@@ -1,5 +1,3 @@
-# github-actions-projects
-
 # GitHub Actions Project 1 — Python Test & Reporting CI
 
 ## 📌 Overview
