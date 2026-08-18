@@ -15,6 +15,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    outputs:
+      total: ${{ steps.parse_results.outputs.total }}
+      passed: ${{ steps.parse_results.outputs.passed }}
+      failed: ${{ steps.parse_results.outputs.failed }}
+      skipped: ${{ steps.parse_results.outputs.skipped }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
