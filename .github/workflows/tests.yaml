@@ -95,3 +95,19 @@ jobs:
           path: reports/
           # archive: false
 
+  report:
+    name: generate test report
+
+    needs: test
+
+    if: always() # Ensure this job runs regardless of the test job's success or failure. Also applied here on job not step.
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Report
+        run: |
+          echo "Total Tests: ${{ needs.test.outputs.total }}"
+          echo "Passed Tests: ${{ needs.test.outputs.passed }}"
+          echo "Failed Tests: ${{ needs.test.outputs.failed }}"
+          echo "Skipped Tests: ${{ needs.test.outputs.skipped }}"
